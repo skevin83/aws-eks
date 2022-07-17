@@ -7,7 +7,7 @@ pipeline {
          stage('Clone Repository') { 
             steps { 
                 script{
-                    checkout([$class: 'GitSCM', branches: [[name: '*/develop']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '', url: 'https://github.com/skevin83/aws-eks.git']]]) 
+                    checkout([$class: 'GitSCM', branches: [[name: '*/main']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '', url: 'https://github.com/skevin83/aws-eks.git']]]) 
                 }
             }
         }
