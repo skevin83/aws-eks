@@ -20,7 +20,7 @@ pipeline {
         }
         stage('Test'){
             steps {
-                echo 'Empty'
+                echo 'Reserved for Future Enhancement'
             }
         }
         stage('Upload Image to Registry') {
