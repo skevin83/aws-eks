@@ -1,5 +1,5 @@
 FROM gradle:jdk11
-COPY --chown=gradle:gradle . /app
+COPY --chown=gradle:gradle application/ /app
 USER gradle
 WORKDIR /app
 EXPOSE 8080
