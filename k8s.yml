@@ -38,23 +38,23 @@ spec:
             memory: "512Mi"
             cpu: "1"
     affinity:
-    nodeAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-        nodeSelectorTerms:
-        - matchExpressions:
-          - key: topology.kubernetes.io/zone
-            operator: In
-            values:
-            - ap-southeast-1a
-            - ap-southeast-1b
-      preferredDuringSchedulingIgnoredDuringExecution:
-      - weight: 1
-        preference:
-          matchExpressions:
-          - key: InstanceType
-            operator: In
-            values:
-            - t2.micro
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+            - key: topology.kubernetes.io/zone
+              operator: In
+              values:
+              - ap-southeast-1a
+              - ap-southeast-1b              
+        preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 1
+          preference:
+            matchExpressions:
+            - key: Group
+              operator: In
+              values:
+              - managed_group_1
        
 ---
 
