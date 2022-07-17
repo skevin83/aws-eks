@@ -4,7 +4,7 @@ pipeline {
         skipStagesAfterUnstable()
     }
     stages {
-         stage('Clone repository') { 
+         stage('Clone Repository') { 
             steps { 
                 script{
                     checkout([$class: 'GitSCM', branches: [[name: '*/develop']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '', url: 'https://github.com/skevin83/aws-eks.git']]]) 
@@ -23,7 +23,7 @@ pipeline {
                 echo 'Empty'
             }
         }
-        stage('Deploy') {
+        stage('Upload Image to Registry') {
             steps {
                 script {
                     docker.withRegistry('https://619587246008.dkr.ecr.ap-southeast-1.amazonaws.com', 'ecr:ap-southeast-1:aws-credentials') {
@@ -32,6 +32,13 @@ pipeline {
                     }
                 }
             }
+        }
+        stage('Deploying App to Kubernetes') {
+          steps {
+            script {
+              kubernetesDeploy(configs: "k8s.yml", kubeconfigId: "kubernetes")
+            }
+          }
         }
     }
 }

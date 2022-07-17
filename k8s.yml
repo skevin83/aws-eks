@@ -1,0 +1,109 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: java-app
+  labels:
+    name: java-app
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: java-app
+  name: demo-java-app
+  labels:
+    app: demo-java-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: demo-java-app
+  template:
+    metadata:
+      labels:
+        app: demo-java-app
+    spec:
+      containers:
+      - name: demo-java-app
+        image: 619587246008.dkr.ecr.ap-southeast-1.amazonaws.com/demo-helloworld-java-app:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "500m"
+          limits:
+            memory: "512Mi"
+            cpu: "1"
+    affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: topology.kubernetes.io/zone
+            operator: In
+            values:
+            - ap-southeast-1a
+            - ap-southeast-1b
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 1
+        preference:
+          matchExpressions:
+          - key: InstanceType
+            operator: In
+            values:
+            - t2.micro
+       
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: demo-java-app-service
+  namespace: java-app
+spec:
+  selector:
+    app: demo-java-app 
+  type: LoadBalancer
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8080
+    nodePort: 31110
+
+---
+
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: demo-java-app-pdb
+  namespace: java-app
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: demo-java-app
+
+---
+
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: demo-java-app-hpa
+  namespace: java-app
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: demo-java-app
+  minReplicas: 2
+  maxReplicas: 4
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 50
