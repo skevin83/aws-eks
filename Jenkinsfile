@@ -11,10 +11,13 @@ pipeline {
                 }
             }
         }
-
-        stage('Build') { 
+        stage('PreBuild') { 
             steps {     
-                sh `cd application`            
+                sh 'cd application'
+            }
+        }        
+        stage('Build') { 
+            steps {           
                 script {
                  app = docker.build("demo-java-app")
                 }
