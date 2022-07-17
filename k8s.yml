@@ -11,11 +11,11 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   namespace: java-app
-  name: demo-java-app
+  name: demo-java-app-a
   labels:
     app: demo-java-app
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: demo-java-app
@@ -30,32 +30,91 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
+        livenessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          failureThreshold: 3
+          periodSeconds: 60
+          terminationGracePeriodSeconds: 60
+        startupProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          failureThreshold: 30
+          periodSeconds: 10
         resources:
           requests:
             memory: "256Mi"
-            cpu: "500m"
+            cpu: "50m"
           limits:
             memory: "512Mi"
             cpu: "1"
-    affinity:
-      nodeAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          nodeSelectorTerms:
-          - matchExpressions:
-            - key: topology.kubernetes.io/zone
-              operator: In
-              values:
-              - ap-southeast-1a
-              - ap-southeast-1b              
-        preferredDuringSchedulingIgnoredDuringExecution:
-        - weight: 1
-          preference:
-            matchExpressions:
-            - key: Group
-              operator: In
-              values:
-              - managed_group_1
-       
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: Group
+                operator: In
+                values:
+                - managed_group_1
+      
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: java-app
+  name: demo-java-app-b
+  labels:
+    app: demo-java-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: demo-java-app
+  template:
+    metadata:
+      labels:
+        app: demo-java-app
+    spec:
+      containers:
+      - name: demo-java-app
+        image: 619587246008.dkr.ecr.ap-southeast-1.amazonaws.com/demo-helloworld-java-app:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        livenessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          failureThreshold: 3
+          periodSeconds: 60
+          terminationGracePeriodSeconds: 60
+        startupProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          failureThreshold: 30
+          periodSeconds: 10
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "50m"
+          limits:
+            memory: "512Mi"
+            cpu: "1"
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: Group
+                operator: In
+                values:
+                - managed_group_2
+
 ---
 
 apiVersion: v1
@@ -91,14 +150,14 @@ spec:
 apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: demo-java-app-hpa
+  name: demo-java-app-hpa-a
   namespace: java-app
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: demo-java-app
-  minReplicas: 2
+    name: demo-java-app-a
+  minReplicas: 1
   maxReplicas: 4
   metrics:
   - type: Resource
@@ -107,3 +166,53 @@ spec:
       target:
         type: Utilization
         averageUtilization: 50
+
+---
+
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: demo-java-app-hpa-b
+  namespace: java-app
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: demo-java-app-b
+  minReplicas: 1
+  maxReplicas: 4
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 50
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: demo-java-app-ingress
+  namespace: java-app
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - k8s.kevinsee.com
+    secretName: k8s-tls
+  rules:
+  - http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service: 
+            name: demo-java-app-service
+            port:
+              number: 80

@@ -111,7 +111,7 @@ module "eks" {
       max_size     = 10
       desired_size = 1
 
-      instance_types = ["t2.micro"]
+      instance_types = ["t2.small"]
       capacity_type  = "SPOT"
 
       root_volume_type = "gp2"
@@ -121,11 +121,12 @@ module "eks" {
         Environment = "production"
         GithubRepo  = "terraform-aws-eks"
         GithubOrg   = "terraform-aws-modules"
+        Group       = "managed_group_1"
       }
 
       tags = {
-        InstanceType = "t2.micro"
-        Group = "managed_group_1"
+        InstanceType = "t2.small"
+        Group        = "managed_group_1"
       }
     }
 
@@ -134,7 +135,7 @@ module "eks" {
       max_size     = 10
       desired_size = 1
 
-      instance_types = ["t2.micro"]
+      instance_types = ["t2.small"]
       capacity_type  = "SPOT"
 
       root_volume_type = "gp2"
@@ -144,11 +145,12 @@ module "eks" {
         Environment = "production"
         GithubRepo  = "terraform-aws-eks"
         GithubOrg   = "terraform-aws-modules"
+        Group       = "managed_group_2"
       }
 
       tags = {
-        InstanceType = "t2.micro"
-        Group = "managed_group_2"
+        InstanceType = "t2.small"
+        Group        = "managed_group_2"
       }
     }
   }
