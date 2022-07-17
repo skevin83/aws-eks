@@ -26,7 +26,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    docker.withRegistry('https://619587246008.dkr.ecr.ap-southeast-1.amazonaws.com', 'ecr:us-east-1:aws-credentials') {
+                    docker.withRegistry('https://619587246008.dkr.ecr.ap-southeast-1.amazonaws.com/demo-helloworld-java-app', 'ecr:us-east-1:aws-credentials') {
                         app.push("${env.BUILD_NUMBER}")
                         app.push("latest")
                     }
