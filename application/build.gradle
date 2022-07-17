@@ -1,0 +1,57 @@
+plugins {
+	id 'org.springframework.boot' version '2.4.0'
+	id 'io.spring.dependency-management' version '1.0.10.RELEASE'
+	id 'java'
+	id 'war'
+	id "com.github.gmazzo.buildconfig" version "2.0.2"
+    id 'com.google.cloud.tools.jib' version '2.6.0'
+}
+
+group = 'com.camptocamp'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'io.micrometer:micrometer-registry-prometheus:1.5.4'
+	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+test {
+	useJUnitPlatform()
+}
+
+
+buildConfig {
+    buildConfigField('String', 'APP_NAME', "\"${project.name}\"")
+    buildConfigField('String', 'BUILD_DATE', "\"${getDate()}\"")
+	buildConfigField('String', 'GIT_COMMIT_HASH', "\"${getCheckedOutGitCommitHash()}\"")
+}
+
+def getDate() {
+    return new Date().format('yyyy-MM-dd HH:mm:ss Z')
+}
+
+def getCheckedOutGitCommitHash() {
+    def gitFolder = "$projectDir/.git/"
+    def takeFromHash = 12
+    /*
+     * '.git/HEAD' contains either
+     *      in case of detached head: the currently checked out commit hash
+     *      otherwise: a reference to a file containing the current commit hash
+     */
+    // def head = new File(gitFolder + "HEAD").text.split(":") // .git/HEAD
+    // def isCommit = head.length == 1 // e5a7c79edabbf7dd39888442df081b1c9d8e88fd
+    // def isRef = head.length > 1     // ref: refs/heads/master
+
+    // if(isCommit) return head[0].trim().take(takeFromHash) // e5a7c79edabb
+
+    // def refHead = new File(gitFolder + head[1].trim()) // .git/refs/heads/master
+    // refHead.text.trim().take takeFromHash
+}
