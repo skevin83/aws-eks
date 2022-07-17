@@ -2,7 +2,7 @@
 Using Terraform to provision a brand new AWS EKS cluster and related resources.
 
 ## Prequisite
-You must have install the following tools.
+You must have installed the following tools.
 1. Terraform
 2. AWS CLI
 
