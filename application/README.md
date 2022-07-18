@@ -9,6 +9,3 @@ Once the container is up and running. Then you can access below URL.
 | info       | Displays arbitrary application info. | http://127.0.0.1:8080/actuator/info |
 | metrics    | Shows ‘metrics’ information for the current application.| http://127.0.0.1:8080/actuator/metrics |
 | prometheus | Exposes metrics in a format that can be scraped by a Prometheus server. | http://127.0.0.1:8080/actuator/prometheus |
-| shutdown   | Lets the application be gracefully shutdown. | curl -X POST http://127.0.0.1:8080/actuator/shutdown |
-
-

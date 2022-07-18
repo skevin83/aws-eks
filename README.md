@@ -4,6 +4,27 @@ The terraform folder contain the infra-as-code to setup an EKS from scratch incl
 ![AWS-EKS](AWS-EKS-VPC.png)
 
 
+# Infra-As-Code Using Terraform
+Using Terraform to provision a brand new AWS EKS cluster and related resources.
+
+## Prerequisite
+You have installed the following tools.
+1. Terraform
+2. AWS CLI
+
+You must setup AWS credentials on your local machine.
+
+## How to setup a brand new AWS EKS Cluster using Terraform
+
+Run following command from your console/terminal.
+```
+cd terraform
+terraform init
+terraform plan
+terraform apply
+```
+
+
 # How to build the application locally
 
 ## Prerequisite
