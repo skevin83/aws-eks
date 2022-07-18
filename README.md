@@ -33,7 +33,7 @@ You have installed Docker on your local machine.
 ## How-to
 The Dockerfile will be used to build the application.
 
-Run the following command to build the application locally on your machine.
+Run the following command in your console/terminal to build and run the application.
 ```
 docker build -t demo-java-app .
 docker run --name=demo-java-app -p 8080:8080 demo-java-app
