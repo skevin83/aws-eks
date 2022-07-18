@@ -25,7 +25,7 @@ terraform apply
 ```
 
 
-# How to build the application locally
+# How to build and the application locally
 
 ## Prerequisite
 You have installed Docker on your local machine.
@@ -36,6 +36,7 @@ The Dockerfile will be used to build the application.
 Run the following command to build the application locally on your machine.
 ```
 docker build -t demo-java-app .
+docker run --name=demo-java-app -p 8080:8080 demo-java-app
 ```
 
 # Using Jenkins as your CI/CD tool
