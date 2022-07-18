@@ -4,7 +4,7 @@ The terraform folder contain the infra-as-code to setup an EKS from scratch incl
 
 # How to build the application locally
 
-## Prequisite
+## Prerequisite
 You have installed Docker on your local machine.
 
 ## How-to
@@ -17,7 +17,7 @@ docker build -t demo-java-app .
 
 # Using Jenkins as your CI/CD tool
 
-## Prequisite
+## Prerequisite
 You have installed Jenkins as your CI/CD tool.
 
 You also have installed the following plugins on your Jenkins.
