@@ -1,6 +1,8 @@
 # Setting up AWS EKS
 The terraform folder contain the infra-as-code to setup an EKS from scratch including vpc, subnets, security groups, nat gateway, internet gateway.
 
+![AWS-EKS](AWS-EKS-VPC.png)
+
 
 # How to build the application locally
 
